@@ -1,0 +1,33 @@
+{
+  "name": "fitness-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": " ts-node-dev --respawn --transpile-only src/index.ts",
+    "start": "node build/index.js",
+    "seed": "ts-node src/seeds/exerciseSeed.util.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^8.10.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.9",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/multer": "^1.4.12",
+    "ts-node-dev": "^2.0.0"
+  }
+}
