@@ -11,16 +11,25 @@ const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const workout_routes_1 = __importDefault(require("./routes/workout.routes"));
 const exercise_routes_1 = __importDefault(require("./routes/exercise.routes"));
 const PORT = process.env.PORT || "";
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-//?Middleware
-app.use(express_1.default.json());
+//middleware
+app.use((0, cors_1.default)({
+    origin: "*",
+    credentials: true,
+}));
 app.use(express_1.default.urlencoded({ extended: false }));
+app.use(express_1.default.json());
 //? Connecting Mongoose
 (0, connectDatabase_1.connectDataBase)();
 //?Routes
 app.use("/api/user", user_routes_1.default);
 app.use("/api/workout", workout_routes_1.default);
 app.use("/api/exercise", exercise_routes_1.default);
+//? root api
+app.use("/", (req, res) => {
+    res.status(200).json({ message: "Server is up and running" });
+});
 //?Handler Path not found
 app.all("*", (req, res, next) => {
     const message = `Can not ${req.method} on ${req.originalUrl}`;

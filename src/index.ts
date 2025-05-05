@@ -6,11 +6,17 @@ import userRoutes from "./routes/user.routes";
 import workoutRoutes from "./routes/workout.routes";
 import exerciseRoutes from "./routes/exercise.routes";
 const PORT = process.env.PORT || "";
+import cors from "cors";
 const app = express();
-
-//?Middleware
-app.use(express.json());
+//middleware
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 //? Connecting Mongoose
 connectDataBase();
@@ -19,6 +25,11 @@ connectDataBase();
 app.use("/api/user", userRoutes);
 app.use("/api/workout", workoutRoutes);
 app.use("/api/exercise", exerciseRoutes);
+
+//? root api
+app.use("/", (req: Request, res: Response) => {
+  res.status(200).json({ message: "Server is up and running" });
+});
 
 //?Handler Path not found
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
