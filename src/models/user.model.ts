@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose";
-import { Gender, Role } from "../@types/global.types";
+import { Role } from "../@types/global.types";
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const userSchema = new mongoose.Schema(
@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: Object.values(Gender),
     },
     role: {
       type: String,

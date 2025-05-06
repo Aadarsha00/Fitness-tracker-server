@@ -57,7 +57,6 @@ const userSchema = new mongoose_1.default.Schema({
     },
     gender: {
         type: String,
-        enum: Object.values(global_types_1.Gender),
     },
     role: {
         type: String,

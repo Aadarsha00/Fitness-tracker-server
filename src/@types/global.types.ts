@@ -2,11 +2,6 @@ export enum Role {
   user = "USER",
   admin = "ADMIN",
 }
-export enum Gender {
-  male = "MALE",
-  female = "FEMALE",
-  others = "OTHERS",
-}
 
 export enum BodyPart {
   chest = "Chest",
