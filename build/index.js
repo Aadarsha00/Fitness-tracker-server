@@ -15,7 +15,7 @@ const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 //middleware
 app.use((0, cors_1.default)({
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true,
 }));
 app.use(express_1.default.urlencoded({ extended: false }));
