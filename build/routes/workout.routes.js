@@ -13,7 +13,7 @@ router.post("/", (0, authentication_middleware_1.authenticate)(global_types_1.al
 //?Get workout by id
 router.get("/id/:id", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), workout_controller_1.getWorkOutById);
 //?Get users workout
-router.get("/user/:userId", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), workout_controller_1.getUserWorkOut);
+router.get("/user", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), workout_controller_1.getUserWorkOut);
 //?Update workout
 router.patch("/:id", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), workout_controller_1.updateWorkout);
 //?DElete workout

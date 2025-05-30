@@ -17,7 +17,7 @@ router.post("/", authenticate(allUser), createWorkout);
 router.get("/id/:id", authenticate(allUser), getWorkOutById);
 
 //?Get users workout
-router.get("/user/:userId", authenticate(allUser), getUserWorkOut);
+router.get("/user", authenticate(allUser), getUserWorkOut);
 
 //?Update workout
 router.patch("/:id", authenticate(allUser), updateWorkout);
