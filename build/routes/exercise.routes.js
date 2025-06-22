@@ -11,11 +11,11 @@ const router = express_1.default.Router();
 //?Create Exercise
 router.post("/", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), exercise_controller_1.createExercise);
 //?Get all exercise
-router.get("/", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), exercise_controller_1.getAllExercise);
+router.get("/", exercise_controller_1.getAllExercise);
 //?get all bodyparts
-router.get("/bodyParts", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), exercise_controller_1.getAllBodyParts);
+router.get("/bodyParts", exercise_controller_1.getAllBodyParts);
 //?get exercise by id
-router.get("/:id", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), exercise_controller_1.getExerciseById);
+router.get("/:id", exercise_controller_1.getExerciseById);
 //?Update exercise
 router.patch("/:id", (0, authentication_middleware_1.authenticate)(global_types_1.allUser), exercise_controller_1.updateExercise);
 //?delete exercise

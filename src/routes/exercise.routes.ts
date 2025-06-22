@@ -15,13 +15,13 @@ const router = express.Router();
 router.post("/", authenticate(allUser), createExercise);
 
 //?Get all exercise
-router.get("/", authenticate(allUser), getAllExercise);
+router.get("/", getAllExercise);
 
 //?get all bodyparts
-router.get("/bodyParts", authenticate(allUser), getAllBodyParts);
+router.get("/bodyParts", getAllBodyParts);
 
 //?get exercise by id
-router.get("/:id", authenticate(allUser), getExerciseById);
+router.get("/:id", getExerciseById);
 
 //?Update exercise
 router.patch("/:id", authenticate(allUser), updateExercise);
