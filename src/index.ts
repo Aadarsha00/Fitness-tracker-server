@@ -6,7 +6,8 @@ import userRoutes from "./routes/user.routes";
 import workoutRoutes from "./routes/workout.routes";
 import exerciseRoutes from "./routes/exercise.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
-const PORT = process.env.PORT || "";
+const PORT = Number(process.env.PORT) || 8000;
+
 import cors from "cors";
 const app = express();
 //middleware

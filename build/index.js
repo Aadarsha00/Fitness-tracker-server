@@ -11,7 +11,7 @@ const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const workout_routes_1 = __importDefault(require("./routes/workout.routes"));
 const exercise_routes_1 = __importDefault(require("./routes/exercise.routes"));
 const dashboard_routes_1 = __importDefault(require("./routes/dashboard.routes"));
-const PORT = process.env.PORT || "";
+const PORT = Number(process.env.PORT) || 8000;
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 //middleware
