@@ -5,6 +5,7 @@ import { customError } from "./middleware/errorHandler.middleware";
 import userRoutes from "./routes/user.routes";
 import workoutRoutes from "./routes/workout.routes";
 import exerciseRoutes from "./routes/exercise.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 const PORT = process.env.PORT || "";
 import cors from "cors";
 const app = express();
@@ -25,6 +26,7 @@ connectDataBase();
 app.use("/api/user", userRoutes);
 app.use("/api/workout", workoutRoutes);
 app.use("/api/exercise", exerciseRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 //? root api
 app.use("/", (req: Request, res: Response) => {

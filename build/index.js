@@ -10,6 +10,7 @@ const errorHandler_middleware_1 = require("./middleware/errorHandler.middleware"
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const workout_routes_1 = __importDefault(require("./routes/workout.routes"));
 const exercise_routes_1 = __importDefault(require("./routes/exercise.routes"));
+const dashboard_routes_1 = __importDefault(require("./routes/dashboard.routes"));
 const PORT = process.env.PORT || "";
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
@@ -26,6 +27,7 @@ app.use(express_1.default.json());
 app.use("/api/user", user_routes_1.default);
 app.use("/api/workout", workout_routes_1.default);
 app.use("/api/exercise", exercise_routes_1.default);
+app.use("/api/dashboard", dashboard_routes_1.default);
 //? root api
 app.use("/", (req, res) => {
     res.status(200).json({ message: "Server is up and running" });
