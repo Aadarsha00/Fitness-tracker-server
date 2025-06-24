@@ -3,7 +3,6 @@ import {
   getWorkoutAnalytics,
   getBodyPartDistribution,
   getWorkoutSummary,
-  debugDashboardData,
   getBodyWeightProgress,
   getExercisePerformance,
   getPersonalRecords,
@@ -15,12 +14,11 @@ const router = express.Router();
 
 router.use(authenticate(allUser));
 
-router.get("/debug", debugDashboardData);
+router.get("/workout-summary", getWorkoutSummary);
 router.get("/workout-analytics", getWorkoutAnalytics);
+router.get("/body-part-distribution", getBodyPartDistribution);
 router.get("/body-weight-progress", getBodyWeightProgress);
 router.get("/exercise-performance", getExercisePerformance);
-router.get("/body-part-distribution", getBodyPartDistribution);
-router.get("/workout-summary", getWorkoutSummary);
 router.get("/personal-records", getPersonalRecords);
 
 export default router;
