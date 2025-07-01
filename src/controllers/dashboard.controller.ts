@@ -185,13 +185,23 @@ export const getBodyWeightProgress = asyncHandler(
       userIdForQuery = new mongoose.Types.ObjectId(userId);
     }
 
-    const totalBodyWeightCount = await Workout.countDocuments({
+    // First, let's get some debug information
+    const totalWorkouts = await Workout.countDocuments({
       user: userIdForQuery,
+      date: { $gte: startDate },
+    });
+
+    const workoutsWithBodyWeight = await Workout.countDocuments({
+      user: userIdForQuery,
+      date: { $gte: startDate },
       bodyWeight: { $exists: true, $ne: null, $gt: 0 },
     });
 
-    console.log("Total body weight records:", totalBodyWeightCount);
+    console.log(
+      `Debug: Found ${totalWorkouts} total workouts, ${workoutsWithBodyWeight} with body weight data`
+    );
 
+    // Get the actual body weight data
     const bodyWeightData = await Workout.aggregate([
       {
         $match: {
@@ -201,9 +211,6 @@ export const getBodyWeightProgress = asyncHandler(
         },
       },
       {
-        $sort: { date: 1 },
-      },
-      {
         $group: {
           _id: {
             year: { $year: "$date" },
@@ -211,77 +218,59 @@ export const getBodyWeightProgress = asyncHandler(
             day: { $dayOfMonth: "$date" },
           },
           date: { $first: "$date" },
-          weight: { $last: "$bodyWeight" },
-          workoutCount: { $sum: 1 },
+          weight: { $last: "$bodyWeight" }, // Get the last (most recent) weight of the day
         },
       },
-      {
-        $sort: { date: 1 },
-      },
+      { $sort: { date: 1 } },
       {
         $project: {
           date: 1,
           weight: 1,
-          workoutCount: 1,
           _id: 0,
         },
       },
     ]);
 
-    if (bodyWeightData.length === 0 && totalBodyWeightCount > 0) {
-      const recentBodyWeightData = await Workout.aggregate([
-        {
-          $match: {
-            user: userIdForQuery,
-            bodyWeight: { $exists: true, $ne: null, $gt: 0 },
-          },
-        },
-        {
-          $sort: { date: -1 },
-        },
-        {
-          $limit: 10,
-        },
-        {
-          $sort: { date: 1 },
-        },
-        {
-          $project: {
-            date: 1,
-            weight: "$bodyWeight",
-            _id: 0,
-          },
-        },
-      ]);
-
-      console.log(
-        "Recent body weight data (fallback):",
-        recentBodyWeightData.length
-      );
-
-      res.status(200).json({
-        status: "success",
-        success: true,
-        data: recentBodyWeightData,
-        message: "Recent body weight progress fetched successfully (fallback)",
-        debug: {
-          requestedPeriod: daysBack,
-          totalRecords: totalBodyWeightCount,
-          fallbackUsed: true,
-        },
+    // If no data found, let's check if there's ANY body weight data for this user (ignoring date range)
+    let allTimeBodyWeightCount = 0;
+    if (bodyWeightData.length === 0) {
+      allTimeBodyWeightCount = await Workout.countDocuments({
+        user: userIdForQuery,
+        bodyWeight: { $exists: true, $ne: null, $gt: 0 },
       });
+      console.log(
+        `Debug: Found ${allTimeBodyWeightCount} workouts with body weight data (all time)`
+      );
     }
+
+    // Enhanced debug information
+    const debugInfo = {
+      requestedPeriod: daysBack,
+      startDate: startDate.toISOString(),
+      totalWorkouts,
+      workoutsWithBodyWeight,
+      allTimeBodyWeightCount,
+      totalRecords: bodyWeightData.length,
+      returnedRecords: bodyWeightData.length,
+      message:
+        bodyWeightData.length === 0
+          ? workoutsWithBodyWeight === 0
+            ? allTimeBodyWeightCount === 0
+              ? "No body weight data found for this user. Users need to record their body weight when creating workouts."
+              : `Body weight data exists (${allTimeBodyWeightCount} records) but not in the selected time period.`
+            : "Body weight data should exist but query returned no results."
+          : "Body weight data found successfully.",
+    };
 
     res.status(200).json({
       status: "success",
       success: true,
       data: bodyWeightData,
-      message: "Body weight progress fetched successfully",
-      debug: {
-        requestedPeriod: daysBack,
-        totalRecords: totalBodyWeightCount,
-        returnedRecords: bodyWeightData.length,
-      },
+      debug: debugInfo,
+      message:
+        bodyWeightData.length > 0
+          ? "Body weight progress fetched successfully"
+          : "No body weight data found for the specified period",
     });
   }
 );
