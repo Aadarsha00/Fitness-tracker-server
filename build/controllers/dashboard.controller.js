@@ -166,13 +166,21 @@ exports.getBodyWeightProgress = (0, asyncHandler_utils_1.asyncHandler)((req, res
     if (typeof userId === "string") {
         userIdForQuery = new mongoose_1.default.Types.ObjectId(userId);
     }
+    const totalBodyWeightCount = yield workout_model_1.Workout.countDocuments({
+        user: userIdForQuery,
+        bodyWeight: { $exists: true, $ne: null, $gt: 0 },
+    });
+    console.log("Total body weight records:", totalBodyWeightCount);
     const bodyWeightData = yield workout_model_1.Workout.aggregate([
         {
             $match: {
                 user: userIdForQuery,
                 date: { $gte: startDate },
-                bodyWeight: { $exists: true, $ne: null },
+                bodyWeight: { $exists: true, $ne: null, $gt: 0 },
             },
+        },
+        {
+            $sort: { date: 1 },
         },
         {
             $group: {
@@ -182,23 +190,70 @@ exports.getBodyWeightProgress = (0, asyncHandler_utils_1.asyncHandler)((req, res
                     day: { $dayOfMonth: "$date" },
                 },
                 date: { $first: "$date" },
-                weight: { $first: "$bodyWeight" },
+                weight: { $last: "$bodyWeight" },
+                workoutCount: { $sum: 1 },
             },
         },
-        { $sort: { date: 1 } },
+        {
+            $sort: { date: 1 },
+        },
         {
             $project: {
                 date: 1,
                 weight: 1,
+                workoutCount: 1,
                 _id: 0,
             },
         },
     ]);
+    if (bodyWeightData.length === 0 && totalBodyWeightCount > 0) {
+        const recentBodyWeightData = yield workout_model_1.Workout.aggregate([
+            {
+                $match: {
+                    user: userIdForQuery,
+                    bodyWeight: { $exists: true, $ne: null, $gt: 0 },
+                },
+            },
+            {
+                $sort: { date: -1 },
+            },
+            {
+                $limit: 10,
+            },
+            {
+                $sort: { date: 1 },
+            },
+            {
+                $project: {
+                    date: 1,
+                    weight: "$bodyWeight",
+                    _id: 0,
+                },
+            },
+        ]);
+        console.log("Recent body weight data (fallback):", recentBodyWeightData.length);
+        res.status(200).json({
+            status: "success",
+            success: true,
+            data: recentBodyWeightData,
+            message: "Recent body weight progress fetched successfully (fallback)",
+            debug: {
+                requestedPeriod: daysBack,
+                totalRecords: totalBodyWeightCount,
+                fallbackUsed: true,
+            },
+        });
+    }
     res.status(200).json({
         status: "success",
         success: true,
         data: bodyWeightData,
         message: "Body weight progress fetched successfully",
+        debug: {
+            requestedPeriod: daysBack,
+            totalRecords: totalBodyWeightCount,
+            returnedRecords: bodyWeightData.length,
+        },
     });
 }));
 exports.getExercisePerformance = (0, asyncHandler_utils_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
